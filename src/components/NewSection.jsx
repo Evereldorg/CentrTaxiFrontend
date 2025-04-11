@@ -35,7 +35,7 @@ const mockNews = {
       text: "Новая программа лояльности для водителей с бонусами за рейсы. Специальные условия для активных водителей с бонусами до 15% от суммы заказа.",
       date: Date.now() / 1000 - 86400,
       attachments: [{
-        photo: { sizes: [{ url: "https://via.placeholder.com/1200x600?text=Акция+для+водителей" }] }
+        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Акция+для+водителей" }] }
       }]
     },
     {
@@ -43,7 +43,7 @@ const mockNews = {
       text: "Обновлённое мобильное приложение доступно для скачивания. Теперь с улучшенной навигацией и быстрым выводом средств.",
       date: Date.now() / 1000 - 172800,
       attachments: [{
-        photo: { sizes: [{ url: "https://via.placeholder.com/1200x600?text=Новое+приложение" }] }
+        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новое+приложение" }] }
       }]
     },
     {
@@ -51,7 +51,7 @@ const mockNews = {
       text: "Расширение зоны работы. Теперь доступны новые районы города и пригорода для заказов.",
       date: Date.now() / 1000 - 259200,
       attachments: [{
-        photo: { sizes: [{ url: "https://via.placeholder.com/1200x600?text=Новые+районы" }] }
+        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новые+районы" }] }
       }]
     },
     {
@@ -59,7 +59,7 @@ const mockNews = {
       text: "Специальная акция для новых водителей - повышенные тарифы в первый месяц работы.",
       date: Date.now() / 1000 - 345600,
       attachments: [{
-        photo: { sizes: [{ url: "https://via.placeholder.com/1200x600?text=Акция+для+новичков" }] }
+        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Акция+для+новичков" }] }
       }]
     },
     {
@@ -67,7 +67,7 @@ const mockNews = {
       text: "Обновление условий работы - теперь доступны новые способы выплат.",
       date: Date.now() / 1000 - 432000,
       attachments: [{
-        photo: { sizes: [{ url: "https://via.placeholder.com/1200x600?text=Новые+выплаты" }] }
+        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новые+выплаты" }] }
       }]
     }
   ]
@@ -84,10 +84,22 @@ const NewSection = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/news`);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://centrtaxibackend-production.up.railway.app';
+      const response = await fetch(`${apiUrl}/api/news`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors'
+      });
       
       if (!response.ok) {
-        throw new Error(`Ошибка сервера: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new TypeError("Ожидался JSON, но получен " + contentType);
       }
 
       const data = await response.json();
@@ -105,6 +117,7 @@ const NewSection = () => {
     } catch (error) {
       console.error("Ошибка при запросе новостей:", error);
       setError("Не удалось обновить новости");
+      setNews(mockNews.items); // Показываем моковые данные при ошибке
     } finally {
       setLoading(false);
     }
@@ -171,7 +184,6 @@ const NewSection = () => {
 
   return (
     <section className="relative w-full min-h-screen bg-gray-100 font-sans pt-14 pb-8 md:pt-24 md:pb-12">
-      {/* Заголовок с минимальным отступом */}
       <motion.div
         className="w-full py-2 text-center bg-gray-900 text-white text-lg md:text-3xl font-bold fixed top-16 left-0 z-20 h-12 flex items-center justify-center"
         initial={{ opacity: 0, y: -20 }}
@@ -181,7 +193,6 @@ const NewSection = () => {
         Новости
       </motion.div>
 
-      {/* Основной контент с минимальным отступом сверху */}
       <div className="w-full h-full flex items-center justify-center px-4 pt-16 pb-12 md:pt-32 md:pb-16">
         <div className="w-full max-w-screen-xl relative">
           {error && (
@@ -212,7 +223,7 @@ const NewSection = () => {
                           className="w-full h-full object-cover rounded-lg"
                           loading="lazy"
                           onError={(e) => {
-                            e.target.src = "https://via.placeholder.com/1200x600?text=Фото+новости";
+                            e.target.src = "https://placehold.co/1200x600?text=Фото+новости";
                           }}
                         />
                       </div>

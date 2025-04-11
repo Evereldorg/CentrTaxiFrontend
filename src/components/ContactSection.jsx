@@ -12,11 +12,11 @@ const ContactSection = () => {
   const contacts = [
     {
       number: "+7 921 993-00-06", 
-      role: "Алексей (руководитель)"
+      role: "Алексей"
     },
     {
       number: "+7 965 016 71 88",
-      role: "Дмитрий (техподдержка)"
+      role: "Олег"
     }
   ];
 
@@ -211,8 +211,8 @@ const ContactSection = () => {
                 <div className="flex justify-between items-start mb-1">
                   <span className="text-gray-500 text-xs">{contact.role}</span>
                   <div className="flex gap-2">
-                    <FaWhatsapp className="text-green-500" size={16} />
-                    <FaViber className="text-purple-600" size={16} />
+                    <FaWhatsapp className="text-green-500" size={24} />
+                    <FaViber className="text-purple-600" size={24} />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -312,8 +312,8 @@ const ContactSection = () => {
                       <h3 className="font-bold text-gray-900">{contact.role}</h3>
                     </div>
                     <div className="flex gap-3">
-                      <FaWhatsapp className="text-green-500" size={20} />
-                      <FaViber className="text-purple-600" size={20} />
+                      <FaWhatsapp className="text-green-500" size={30} />
+                      <FaViber className="text-purple-600" size={30} />
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
