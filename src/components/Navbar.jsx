@@ -20,8 +20,8 @@ const Navbar = () => {
       <div className="flex items-center space-x-3">
         {/* Заменяем круг с буквами на логотип */}
         <img 
-          src="/logo.jpg" 
-          alt="Логотип Центра подключения водителей" 
+          src="/logo.png" 
+          alt="Центр подключения водителей" 
           className="h-9 w-auto" 
         />
         <div className="flex flex-col">
