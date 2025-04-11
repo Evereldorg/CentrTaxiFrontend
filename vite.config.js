@@ -18,5 +18,16 @@ export default defineConfig({
   build: {
     cssCodeSplit: true,
     chunkSizeWarningLimit: 1500,
+    outDir: 'dist'
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://centrtaxibackend-production.up.railway.app',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 });

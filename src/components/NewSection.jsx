@@ -84,7 +84,7 @@ const NewSection = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3001/api/news");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/news`);
       
       if (!response.ok) {
         throw new Error(`Ошибка сервера: ${response.status}`);
