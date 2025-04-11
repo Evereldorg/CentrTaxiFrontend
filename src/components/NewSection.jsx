@@ -74,9 +74,9 @@ const mockNews = {
 };
 
 const NewSection = () => {
-  const [news, setNews] = useState(mockNews.items);
+  const [news, setNews] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const updateInterval = useRef(null);
@@ -85,39 +85,46 @@ const NewSection = () => {
     try {
       setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'https://centrtaxibackend-production.up.railway.app';
-      const response = await fetch(`${apiUrl}/api/news`, {
+      
+      // Добавляем timestamp для избежания кеширования
+      const timestamp = new Date().getTime();
+      const response = await fetch(`${apiUrl}/api/news?t=${timestamp}`, {
+        method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         mode: 'cors'
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      // Проверяем Content-Type
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        throw new TypeError("Ожидался JSON, но получен " + contentType);
+        const text = await response.text();
+        throw new TypeError(`Expected JSON but got ${contentType}: ${text.substring(0, 100)}`);
       }
 
       const data = await response.json();
       
       if (data.error) {
-        console.error("Ошибка API:", data.error);
-        setError("Официальные новости временно недоступны");
-        return;
+        throw new Error(data.error.message || "API returned error");
       }
 
       if (data.response?.items) {
         setNews(data.response.items);
         setError(null);
+      } else {
+        throw new Error("Invalid data format from API");
       }
     } catch (error) {
-      console.error("Ошибка при запросе новостей:", error);
-      setError("Не удалось обновить новости");
-      setNews(mockNews.items); // Показываем моковые данные при ошибке
+      console.error("News fetch error:", error);
+      setError("Не удалось загрузить новости. Показаны примеры.");
+      setNews(mockNews.items);
     } finally {
       setLoading(false);
     }
@@ -125,7 +132,8 @@ const NewSection = () => {
 
   useEffect(() => {
     fetchNews();
-    updateInterval.current = setInterval(fetchNews, 900000);
+    updateInterval.current = setInterval(fetchNews, 300000); // Обновление каждые 5 минут
+    
     return () => {
       if (updateInterval.current) {
         clearInterval(updateInterval.current);
@@ -195,13 +203,23 @@ const NewSection = () => {
 
       <div className="w-full h-full flex items-center justify-center px-4 pt-16 pb-12 md:pt-32 md:pb-16">
         <div className="w-full max-w-screen-xl relative">
+          {loading && (
+            <motion.div 
+              className="text-center text-yellow-600 mb-4 text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              Загрузка новостей...
+            </motion.div>
+          )}
+
           {error && (
             <motion.div 
               className="text-center text-yellow-600 mb-4 text-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              {error} (показаны примеры)
+              {error}
             </motion.div>
           )}
 
