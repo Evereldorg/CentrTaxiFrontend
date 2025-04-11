@@ -86,27 +86,16 @@ const NewSection = () => {
       setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'https://centrtaxibackend-production.up.railway.app';
       
-      // Добавляем timestamp для избежания кеширования
-      const timestamp = new Date().getTime();
-      const response = await fetch(`${apiUrl}/api/news?t=${timestamp}`, {
+      const response = await fetch(`${apiUrl}/api/news`, {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Accept': 'application/json'
         },
-        credentials: 'include',
-        mode: 'cors'
+        credentials: 'include'
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Проверяем Content-Type
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        throw new TypeError(`Expected JSON but got ${contentType}: ${text.substring(0, 100)}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -132,7 +121,7 @@ const NewSection = () => {
 
   useEffect(() => {
     fetchNews();
-    updateInterval.current = setInterval(fetchNews, 300000); // Обновление каждые 5 минут
+    updateInterval.current = setInterval(fetchNews, 300000); // 5 minutes
     
     return () => {
       if (updateInterval.current) {
@@ -185,9 +174,9 @@ const NewSection = () => {
           customPaging: i => (
             <div className={`w-3 h-3 rounded-full transition-all ${i === currentSlide ? 'bg-yellow-400' : 'bg-gray-300'}`} />
           )
-        },
-      },
-    ],
+        }
+      }
+    ]
   };
 
   return (
