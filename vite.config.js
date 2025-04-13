@@ -16,11 +16,13 @@ export default defineConfig({
     }
   },
   build: {
-    cssCodeSplit: true,
-    chunkSizeWarningLimit: 1500,
     outDir: 'dist',
     rollupOptions: {
-      external: ['react', 'react-dom', 'react-slick']
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+        }
+      }
     }
   },
   server: {
@@ -30,6 +32,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }
+    }
+  },
+  resolve: {
+    alias: {
+      'react': '/node_modules/react',
+      'react-dom': '/node_modules/react-dom'
     }
   }
 });
