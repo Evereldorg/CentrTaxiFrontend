@@ -77,7 +77,7 @@ const NewSection = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/api/news');
+      const response = await fetch('https://centrtaxibackend-production.up.railway.app/api/news');
       
       if (!response.ok) {
         throw new Error(`Ошибка сервера: ${response.status}`);
@@ -98,6 +98,10 @@ const NewSection = () => {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+  console.log('API URL:', process.env.REACT_APP_API_URL || '/api');
+  }, []);
 
   useEffect(() => {
     bodyRef.current = document.body;
