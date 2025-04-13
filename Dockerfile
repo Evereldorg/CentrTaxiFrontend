@@ -8,7 +8,14 @@ RUN npm run build
 
 # Шаг 2: Запуск через Nginx
 FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+# Копируем собранный проект
+COPY --from=builder /app/build /usr/share/nginx/html
+# Копируем конфиг Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+# Заменяем переменную PORT во время сборки
+RUN envsubst '\$PORT' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp && \
+    mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
+# Открываем порт (Railway сам подставит нужный)
+EXPOSE $PORT
+# Запускаем Nginx
 CMD ["nginx", "-g", "daemon off;"]
