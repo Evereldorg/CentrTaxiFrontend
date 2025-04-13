@@ -45,30 +45,6 @@ const mockNews = {
       attachments: [{
         photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новое+приложение" }] }
       }]
-    },
-    {
-      id: 3,
-      text: "Расширение зоны работы. Теперь доступны новые районы города и пригорода для заказов.",
-      date: Date.now() / 1000 - 259200,
-      attachments: [{
-        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новые+районы" }] }
-      }]
-    },
-    {
-      id: 4,
-      text: "Специальная акция для новых водителей - повышенные тарифы в первый месяц работы.",
-      date: Date.now() / 1000 - 345600,
-      attachments: [{
-        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Акция+для+новичков" }] }
-      }]
-    },
-    {
-      id: 5,
-      text: "Обновление условий работы - теперь доступны новые способы выплат.",
-      date: Date.now() / 1000 - 432000,
-      attachments: [{
-        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новые+выплаты" }] }
-      }]
     }
   ]
 };
@@ -132,6 +108,36 @@ const NewSection = () => {
 
   const openModal = (index) => setActiveModal(index);
   const closeModal = () => setActiveModal(null);
+
+  const renderAttachment = (attachment) => {
+    switch(attachment.type) {
+      case 'photo':
+        return (
+          <img
+            src={attachment.photo.sizes[attachment.photo.sizes.length - 1].url}
+            alt="Новость"
+            className="w-full h-full object-cover rounded-lg"
+            loading="lazy"
+            onError={(e) => {
+              e.target.src = "https://placehold.co/1200x600?text=Фото+новости";
+            }}
+          />
+        );
+      case 'video':
+        return (
+          <div className="relative pt-[56.25%]"> {/* 16:9 aspect ratio */}
+            <iframe
+              src={`https://vk.com/video${attachment.video.owner_id}_${attachment.video.id}`}
+              className="absolute top-0 left-0 w-full h-full rounded-lg"
+              frameBorder="0"
+              allowFullScreen
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   const settings = {
     dots: true,
@@ -222,17 +228,9 @@ const NewSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
-                    {item.attachments?.[0]?.photo?.sizes?.length > 0 && (
+                    {item.attachments?.[0] && (
                       <div className="mb-2 flex-shrink-0 h-[180px] md:h-[280px]">
-                        <img
-                          src={item.attachments[0].photo.sizes[item.attachments[0].photo.sizes.length - 1].url}
-                          alt="Новость"
-                          className="w-full h-full object-cover rounded-lg"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src = "https://placehold.co/1200x600?text=Фото+новости";
-                          }}
-                        />
+                        {renderAttachment(item.attachments[0])}
                       </div>
                     )}
                     
@@ -279,14 +277,9 @@ const NewSection = () => {
               &times;
             </button>
             <div className="overflow-y-auto pr-2">
-              {news[activeModal].attachments?.[0]?.photo?.sizes?.length > 0 && (
+              {news[activeModal].attachments?.[0] && (
                 <div className="mb-4 h-[200px] md:h-[350px]">
-                  <img
-                    src={news[activeModal].attachments[0].photo.sizes[news[activeModal].attachments[0].photo.sizes.length - 1].url}
-                    alt="Новость"
-                    className="w-full h-full object-cover rounded-lg"
-                    loading="lazy"
-                  />
+                  {renderAttachment(news[activeModal].attachments[0])}
                 </div>
               )}
               <div className="text-sm text-gray-500 mb-2">
