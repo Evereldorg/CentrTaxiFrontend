@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
-import { motion } from "framer-motion";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -8,7 +7,6 @@ const NextArrow = ({ onClick }) => (
   <button 
     onClick={onClick}
     className="absolute right-0 top-1/2 z-10 transform -translate-y-1/2 bg-yellow-400 hover:bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
-    aria-label="Next"
   >
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -20,7 +18,6 @@ const PrevArrow = ({ onClick }) => (
   <button 
     onClick={onClick}
     className="absolute left-0 top-1/2 z-10 transform -translate-y-1/2 bg-yellow-400 hover:bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
-    aria-label="Previous"
   >
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -28,25 +25,44 @@ const PrevArrow = ({ onClick }) => (
   </button>
 );
 
-const mockNews = {
-  items: [
-    {
-      id: 1,
-      text: "Новая программа лояльности для водителей с бонусами за рейсы. Специальные условия для активных водителей с бонусами до 15% от суммы заказа.",
-      date: Date.now() / 1000 - 86400,
-      attachments: [{
-        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Акция+для+водителей" }] }
-      }]
-    },
-    {
-      id: 2,
-      text: "Обновлённое мобильное приложение доступно для скачивания. Теперь с улучшенной навигацией и быстрым выводом средств.",
-      date: Date.now() / 1000 - 172800,
-      attachments: [{
-        photo: { sizes: [{ url: "https://placehold.co/1200x600?text=Новое+приложение" }] }
-      }]
+const renderTextWithLinks = (text) => {
+  if (!text) return null;
+  
+  // Удаляем хэштеги из текста перед отображением
+  const textWithoutHashtags = text.replace(/#[а-яА-ЯёЁa-zA-Z0-9_]+/g, '');
+  
+  return textWithoutHashtags.split('\n').map((paragraph, i) => {
+    const parts = [];
+    let remaining = paragraph;
+    
+    while (remaining.length > 0) {
+      const urlMatch = remaining.match(/(https?:\/\/[^\s]+)/);
+      
+      if (urlMatch) {
+        const before = remaining.slice(0, urlMatch.index);
+        if (before) parts.push(before);
+        
+        parts.push(
+          <a 
+            key={`link-${i}-${parts.length}`}
+            href={urlMatch[0]} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline break-all"
+          >
+            {urlMatch[0]}
+          </a>
+        );
+        
+        remaining = remaining.slice(urlMatch.index + urlMatch[0].length);
+      } else {
+        parts.push(remaining);
+        remaining = '';
+      }
     }
-  ]
+    
+    return <p key={`p-${i}`} className="mb-2 break-words">{parts}</p>;
+  });
 };
 
 const NewSection = () => {
@@ -54,83 +70,76 @@ const NewSection = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const updateInterval = useRef(null);
+  const bodyRef = useRef(null);
 
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://centrtaxibackend-production.up.railway.app';
+      setError(null);
       
-      const response = await fetch(`${apiUrl}/api/news`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        },
-        credentials: 'include'
-      });
-
+      const response = await fetch('/api/api/news');
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Ошибка сервера: ${response.status}`);
       }
-
+      
       const data = await response.json();
       
-      if (data.error) {
-        throw new Error(data.error.message || "API returned error");
+      if (!data.response?.items) {
+        throw new Error("Некорректный формат данных");
       }
-
-      if (data.response?.items) {
-        setNews(data.response.items);
-        setError(null);
-      } else {
-        throw new Error("Invalid data format from API");
-      }
-    } catch (error) {
-      console.error("News fetch error:", error);
-      setError("Не удалось загрузить новости. Показаны примеры.");
-      setNews(mockNews.items);
+      
+      setNews(data.response.items);
+    } catch (err) {
+      console.error("Ошибка загрузки новостей:", err);
+      setError("Не удалось загрузить новости. Пожалуйста, попробуйте позже.");
+      setNews([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    bodyRef.current = document.body;
     fetchNews();
-    updateInterval.current = setInterval(fetchNews, 300000); // 5 minutes
-    
-    return () => {
-      if (updateInterval.current) {
-        clearInterval(updateInterval.current);
-      }
-    };
+    const interval = setInterval(fetchNews, 300000);
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (activeModal !== null) {
+      bodyRef.current.style.overflow = 'hidden';
+    } else {
+      bodyRef.current.style.overflow = 'auto';
+    }
+  }, [activeModal]);
 
   const openModal = (index) => setActiveModal(index);
   const closeModal = () => setActiveModal(null);
 
   const renderAttachment = (attachment) => {
+    if (!attachment) return null;
+    
     switch(attachment.type) {
       case 'photo':
         return (
           <img
             src={attachment.photo.sizes[attachment.photo.sizes.length - 1].url}
-            alt="Новость"
+            alt=""
             className="w-full h-full object-cover rounded-lg"
             loading="lazy"
-            onError={(e) => {
-              e.target.src = "https://placehold.co/1200x600?text=Фото+новости";
-            }}
+            onError={(e) => e.target.src = "https://placehold.co/1200x600?text=Фото+новости"}
           />
         );
       case 'video':
         return (
-          <div className="relative pt-[56.25%]"> {/* 16:9 aspect ratio */}
+          <div className="relative pt-[56.25%]">
             <iframe
               src={`https://vk.com/video${attachment.video.owner_id}_${attachment.video.id}`}
               className="absolute top-0 left-0 w-full h-full rounded-lg"
               frameBorder="0"
               allowFullScreen
+              title="Видео"
             />
           </div>
         );
@@ -151,35 +160,12 @@ const NewSection = () => {
     centerPadding: "0px",
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    beforeChange: (current, next) => setCurrentSlide(next),
-    appendDots: dots => (
-      <div className="pb-4 sm:pb-8">
-        <ul className="m-0 p-0 flex justify-center"> 
-          {dots}
-        </ul>
-      </div>
-    ),
-    customPaging: i => (
-      <div className={`w-3 h-3 rounded-full transition-all ${i === currentSlide ? 'bg-yellow-400' : 'bg-gray-300'}`} />
-    ),
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 1,
-          centerMode: false,
-          nextArrow: <NextArrow />,
-          prevArrow: <PrevArrow />,
-          appendDots: dots => (
-            <div className="pb-4 sm:pb-8">
-              <ul className="m-0 p-0 flex justify-center">
-                {dots}
-              </ul>
-            </div>
-          ),
-          customPaging: i => (
-            <div className={`w-3 h-3 rounded-full transition-all ${i === currentSlide ? 'bg-yellow-400' : 'bg-gray-300'}`} />
-          )
+          centerMode: false
         }
       }
     ]
@@ -187,116 +173,117 @@ const NewSection = () => {
 
   return (
     <section className="relative w-full min-h-screen bg-gray-100 font-sans pt-14 pb-8 md:pt-24 md:pb-12">
-      <motion.div
-        className="w-full py-2 text-center bg-gray-900 text-white text-lg md:text-3xl font-bold fixed top-16 left-0 z-20 h-12 flex items-center justify-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+      <div className="w-full py-2 text-center bg-gray-900 text-white text-lg md:text-3xl font-bold fixed top-16 left-0 z-20 h-12 flex items-center justify-center">
         Новости
-      </motion.div>
+      </div>
 
       <div className="w-full h-full flex items-center justify-center px-4 pt-16 pb-12 md:pt-32 md:pb-16">
         <div className="w-full max-w-screen-xl relative">
           {loading && (
-            <motion.div 
-              className="text-center text-yellow-600 mb-4 text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
+            <div className="text-center text-yellow-600 mb-4">
               Загрузка новостей...
-            </motion.div>
+            </div>
           )}
 
           {error && (
-            <motion.div 
-              className="text-center text-yellow-600 mb-4 text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
+            <div className="text-center text-red-500 mb-4">
               {error}
-            </motion.div>
+            </div>
           )}
 
-          <div className="py-2">
-            <Slider {...settings}>
-              {news.map((item, index) => (
-                <div key={item.id || index} className="px-2 h-full">
-                  <motion.div
-                    className="bg-white rounded-xl shadow-xl overflow-hidden p-4 flex flex-col h-[400px] md:h-[500px] mb-4 md:mb-8"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    {item.attachments?.[0] && (
-                      <div className="mb-2 flex-shrink-0 h-[180px] md:h-[280px]">
-                        {renderAttachment(item.attachments[0])}
+          {!loading && !error && news.length === 0 && (
+            <div className="text-center text-gray-500 mb-4">
+              Новостей пока нет
+            </div>
+          )}
+
+          {news.length > 0 && (
+            <div className="py-2">
+              <Slider {...settings}>
+                {news.map((item, index) => (
+                  <div key={item.id || index} className="px-2 h-full">
+                    <div className="bg-white rounded-xl shadow-xl overflow-hidden p-4 flex flex-col h-[400px] md:h-[500px] mb-4 md:mb-8">
+                      {item.attachments?.[0] && (
+                        <div className="mb-2 flex-shrink-0 h-[180px] md:h-[280px]">
+                          {renderAttachment(item.attachments[0])}
+                        </div>
+                      )}
+                      
+                      <div className="mt-1 text-xs text-gray-500">
+                        {new Date(item.date * 1000).toLocaleDateString("ru-RU", {
+                          day: 'numeric',
+                          month: 'long'
+                        })}
                       </div>
-                    )}
-                    
-                    <div className="mt-1 text-xs text-gray-500">
-                      {new Date(item.date * 1000).toLocaleDateString("ru-RU", {
-                        day: 'numeric',
-                        month: 'long'
-                      })}
+                      
+                      <div className="mt-2 text-base line-clamp-4 text-gray-800 flex-grow">
+                        {renderTextWithLinks(item.text)}
+                      </div>
+                      
+                      <button
+                        className="mt-3 self-start px-4 py-2 text-sm font-medium rounded-lg bg-yellow-400 hover:bg-yellow-500 text-gray-900 transition-colors"
+                        onClick={() => openModal(index)}
+                      >
+                        Подробнее
+                      </button>
                     </div>
-                    <div className="mt-2 text-base font-medium line-clamp-4 text-gray-800 flex-grow">
-                      {item.text}
-                    </div>
-                    <button
-                      className="mt-3 self-start px-4 py-2 text-sm font-medium rounded-lg bg-yellow-400 hover:bg-yellow-500 text-gray-900 transition-colors"
-                      onClick={() => openModal(index)}
-                    >
-                      Подробнее
-                    </button>
-                  </motion.div>
-                </div>
-              ))}
-            </Slider>
-          </div>
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          )}
         </div>
       </div>
 
       {activeModal !== null && news[activeModal] && (
-        <motion.div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4 pt-16 pb-8 md:pt-24 md:pb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 pt-20 pb-8 overflow-y-auto"
           onClick={closeModal}
         >
-          <motion.div 
-            className="bg-white max-w-2xl w-full rounded-xl p-6 relative max-h-[80vh] flex flex-col"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
+          <div 
+            className="bg-white max-w-2xl w-full rounded-xl p-6 relative my-8 max-h-[80vh] overflow-y-auto custom-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 text-gray-700 hover:text-black text-2xl font-bold bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center z-10"
+              className="absolute top-2 right-2 bg-yellow-400 hover:bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center z-50 shadow-lg border-2 border-white transform hover:scale-110 transition-transform"
               onClick={closeModal}
+              style={{ margin: 0 }}
             >
-              &times;
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5 text-gray-800"
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path 
+                  fillRule="evenodd" 
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" 
+                  clipRule="evenodd" 
+                />
+              </svg>
             </button>
-            <div className="overflow-y-auto pr-2">
+            
+            <div className="pr-2">
               {news[activeModal].attachments?.[0] && (
                 <div className="mb-4 h-[200px] md:h-[350px]">
                   {renderAttachment(news[activeModal].attachments[0])}
                 </div>
               )}
+              
               <div className="text-sm text-gray-500 mb-2">
                 {new Date(news[activeModal].date * 1000).toLocaleDateString("ru-RU", {
                   day: 'numeric',
                   month: 'long',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
+                  year: 'numeric'
                 })}
               </div>
-              <div className="text-base text-gray-800 whitespace-pre-wrap">
-                {news[activeModal].text}
+              
+              <div className="text-base text-gray-700 whitespace-pre-line break-words">
+                {renderTextWithLinks(news[activeModal].text)}
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </section>
   );
