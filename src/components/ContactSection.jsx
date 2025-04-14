@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaWhatsapp, FaViber, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaTelegram } from 'react-icons/fa';
 
 const ContactSection = () => {
+  const [copiedIndex, setCopiedIndex] = useState(null);
   const benefits = [
     "Экономить на аренде и направлять эти средства на улучшение сервиса для наших водителей",
     "Работать быстрее и удобнее - все вопросы решаются дистанционно",
@@ -19,6 +20,31 @@ const ContactSection = () => {
       role: "Олег"
     }
   ];
+
+  const handleCallClick = (number, index, isMobile = false) => {
+    if (isMobile) {
+      // На мобильных устройствах сразу звоним
+      window.location.href = `tel:${number.replace(/\D/g, '')}`;
+    } else {
+      // На десктопах копируем номер
+      navigator.clipboard.writeText(number.replace(/\D/g, ''));
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    }
+  };
+
+  const openMessenger = (number, app) => {
+    const cleanNumber = number.replace(/\D/g, '');
+    let url;
+    
+    if (app === 'whatsapp') {
+      url = `https://wa.me/${cleanNumber}`;
+    } else if (app === 'viber') {
+      url = `viber://chat?number=${cleanNumber}`;
+    }
+    
+    window.open(url, '_blank');
+  };
 
   // Варианты анимации
   const containerVariants = {
@@ -54,6 +80,18 @@ const ContactSection = () => {
     }
   };
 
+  const underlineVariants = {
+    hidden: { scaleX: 0 },
+    visible: {
+      scaleX: 1,
+      transition: {
+        delay: 0.4,
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
   // Настройки для viewport
   const viewportSettings = {
     once: true,
@@ -77,8 +115,9 @@ const ContactSection = () => {
         >
           <h2 className="text-xl font-bold text-gray-900 mb-1">Связаться с нами</h2>
           <p className="text-gray-600 text-xs">
-            <span className="text-yellow-500">Центр подключения</span> работает онлайн
+            <span className="text-yellow-500">Центр подключения</span> работает полностью онлайн.
           </p>
+          <p className="text-gray-600 text-xs"><b>Это позволяет нам:</b></p>
         </motion.div>
 
         <motion.ul 
@@ -116,13 +155,20 @@ const ContactSection = () => {
               <div className="flex justify-between items-start mb-1">
                 <span className="text-gray-500 text-2xs">{contact.role}</span>
                 <div className="flex gap-1">
-                  <FaWhatsapp className="text-green-500" size={14} />
-                  <FaViber className="text-purple-600" size={14} />
+                  <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
+                    <FaWhatsapp className="text-green-500" size={20} />
+                  </button>
+                  <button onClick={() => openMessenger(contact.number, 'viber')}>
+                    <FaViber className="text-purple-600" size={20} />
+                  </button>
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-900">{contact.number}</span>
-                <button className="bg-yellow-400 text-gray-900 text-2xs py-0.5 px-2 rounded flex items-center">
+                <button 
+                  className="bg-yellow-400 text-gray-900 text-2xs py-0.5 px-2 rounded flex items-center"
+                  onClick={() => handleCallClick(contact.number, index, true)}
+                >
                   <FaPhoneAlt size={10} className="mr-0.5" />
                   <span>Позвонить</span>
                 </button>
@@ -167,7 +213,7 @@ const ContactSection = () => {
           >
             <h2 className="text-2xl font-bold text-gray-900 mb-1">Связаться с нами</h2>
             <p className="text-gray-600 text-sm">
-              <span className="text-yellow-500 font-medium">Центр подключения водителей</span> работает онлайн
+              <span className="text-yellow-500 font-medium">Центр подключения водителей</span> работает полностью онлайн. Это позволяет нам:
             </p>
           </motion.div>
 
@@ -211,15 +257,26 @@ const ContactSection = () => {
                 <div className="flex justify-between items-start mb-1">
                   <span className="text-gray-500 text-xs">{contact.role}</span>
                   <div className="flex gap-2">
-                    <FaWhatsapp className="text-green-500" size={24} />
-                    <FaViber className="text-purple-600" size={24} />
+                    <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
+                      <FaWhatsapp className="text-green-500" size={24} />
+                    </button>
+                    <button onClick={() => openMessenger(contact.number, 'viber')}>
+                      <FaViber className="text-purple-600" size={24} />
+                    </button>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-base font-medium text-gray-900">{contact.number}</span>
-                  <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs py-1 px-3 rounded flex items-center">
+                  <button 
+                    className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 text-xs py-1 px-3 rounded flex items-center"
+                    onClick={() => handleCallClick(contact.number, index)}
+                  >
                     <FaPhoneAlt size={12} className="mr-1" />
-                    Позвонить
+                    {copiedIndex === index ? (
+                      <span className="text-xs">Скопировано</span>
+                    ) : (
+                      <span>Позвонить</span>
+                    )}
                   </button>
                 </div>
               </motion.div>
@@ -267,7 +324,7 @@ const ContactSection = () => {
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Связаться с нами</h2>
             <p className="text-xl text-gray-600">
-              <span className="text-yellow-500 font-medium">Центр подключения водителей</span> работает полностью онлайн
+              <span className="text-yellow-500 font-medium">Центр подключения водителей</span> работает полностью онлайн. Это позволяет нам:
             </p>
           </motion.div>
 
@@ -291,6 +348,25 @@ const ContactSection = () => {
             ))}
           </motion.div>
 
+          <motion.div 
+            className="text-center mb-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportSettings}
+            variants={fadeInVariants}
+          >
+            <div className="relative inline-block">
+              <p className="text-xl text-gray-600 relative z-10">
+                Связаться с нами можно <span className="font-medium relative">во всех мессенджерах
+                <motion.span
+                  className="absolute bottom-0 left-0 h-0.5 bg-yellow-400 rounded-full w-full origin-left"
+                  variants={underlineVariants}
+                  style={{ bottom: '-4px' }}
+                /></span> по следующим номерам:
+              </p>
+            </div>
+          </motion.div>
+
           <motion.div
             className="grid grid-cols-2 gap-6 mt-auto mb-0"
             initial="hidden"
@@ -303,7 +379,7 @@ const ContactSection = () => {
               {contacts.map((contact, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white rounded-xl shadow-md p-5 border border-gray-200"
+                  className="bg-white rounded-xl shadow-md p-3 border border-gray-200"
                   variants={itemVariants}
                   whileHover={{ y: -3 }}
                 >
@@ -312,14 +388,26 @@ const ContactSection = () => {
                       <h3 className="font-bold text-gray-900">{contact.role}</h3>
                     </div>
                     <div className="flex gap-3">
-                      <FaWhatsapp className="text-green-500" size={30} />
-                      <FaViber className="text-purple-600" size={30} />
+                      <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
+                        <FaWhatsapp className="text-green-500 hover:text-green-600 transition-colors" size={30} />
+                      </button>
+                      <button onClick={() => openMessenger(contact.number, 'viber')}>
+                        <FaViber className="text-purple-600 hover:text-purple-700 transition-colors" size={30} />
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-900">{contact.number}</span>
-                    <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 px-4 rounded-lg flex items-center gap-2">
-                      <FaPhoneAlt size={14} /> Позвонить
+                    <button 
+                      className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 px-3 rounded-lg flex items-center gap-2"
+                      onClick={() => handleCallClick(contact.number, index)}
+                    >
+                      <FaPhoneAlt size={14} />
+                      {copiedIndex === index ? (
+                        <span className="text-sm">Скопировано</span>
+                      ) : (
+                        <span>Позвонить</span>
+                      )}
                     </button>
                   </div>
                 </motion.div>
@@ -327,7 +415,7 @@ const ContactSection = () => {
             </div>
 
             <motion.div
-              className="bg-white rounded-xl shadow-md p-6 border border-gray-200"
+              className="bg-white rounded-xl shadow-md p-4 border border-gray-200"
               variants={itemVariants}
               whileHover={{ y: -3 }}
               transition={{ delay: 0.6 }}

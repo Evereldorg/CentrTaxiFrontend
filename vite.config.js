@@ -4,7 +4,9 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({
+    jsxRuntime: 'automatic' // Исправляем устаревший JSX transform
+  })],
   css: {
     postcss: {
       plugins: [
@@ -34,10 +36,7 @@ export default defineConfig({
       }
     }
   },
-  resolve: {
-    alias: {
-      'react': '/node_modules/react',
-      'react-dom': '/node_modules/react-dom'
-    }
+  define: {
+    'process.env': {} // Фикс для ошибки process is not defined
   }
 });

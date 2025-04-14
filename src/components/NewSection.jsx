@@ -99,9 +99,6 @@ const NewSection = () => {
     }
   };
   
-  useEffect(() => {
-  console.log('API URL:', process.env.REACT_APP_API_URL || '/api');
-  }, []);
 
   useEffect(() => {
     bodyRef.current = document.body;
