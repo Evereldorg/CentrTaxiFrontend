@@ -28,7 +28,6 @@ const PrevArrow = ({ onClick }) => (
 const renderTextWithLinks = (text) => {
   if (!text) return null;
   
-  // Удаляем хэштеги из текста перед отображением
   const textWithoutHashtags = text.replace(/#[а-яА-ЯёЁa-zA-Z0-9_]+/g, '');
   
   return textWithoutHashtags.split('\n').map((paragraph, i) => {
@@ -71,6 +70,7 @@ const NewSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const bodyRef = useRef(null);
+  const modalRef = useRef(null);
 
   const fetchNews = async () => {
     try {
@@ -98,7 +98,6 @@ const NewSection = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     bodyRef.current = document.body;
@@ -238,17 +237,23 @@ const NewSection = () => {
 
       {activeModal !== null && news[activeModal] && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 pt-20 pb-8 overflow-y-auto"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 pt-20 overflow-y-auto"
           onClick={closeModal}
         >
           <div 
+            ref={modalRef}
             className="bg-white max-w-2xl w-full rounded-xl p-6 relative my-8 max-h-[80vh] overflow-y-auto custom-scrollbar"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }}
           >
             <button
-              className="absolute top-2 right-2 bg-yellow-400 hover:bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center z-50 shadow-lg border-2 border-white transform hover:scale-110 transition-transform"
+              className="absolute top-4 right-4 bg-yellow-400 hover:bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center z-50 shadow-lg border-2 border-white transform hover:scale-110 transition-transform"
               onClick={closeModal}
-              style={{ margin: 0 }}
             >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 

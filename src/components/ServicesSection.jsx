@@ -99,6 +99,22 @@ const ServicesSection = () => {
     }
   };
 
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      backgroundColor: "#111827", // Темный оттенок черного при наведении
+      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.2)",
+      transition: {
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    },
+    tap: {
+      scale: 0.98,
+      backgroundColor: "#000000" // Чистый черный при нажатии
+    }
+  };
+
   return (
     <section
       id="services"
@@ -190,13 +206,18 @@ const ServicesSection = () => {
                 >
                   {tariff.icon}
                 </motion.div>
-                <motion.button
-                  variants={itemVariants}
-                  className="bg-black text-white px-6 py-3 rounded-full mx-auto w-full max-w-xs hover:scale-110 transition-transform duration-200 hover:shadow-lg"
-                  whileTap={{ scale: 0.95 }}
+                <motion.a
+                  href="https://my.jump.taxi/autoregistration/form/c32803?referrer_code=14515641"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-black text-white px-6 py-3 rounded-full mx-auto w-full max-w-xs hover:shadow-lg"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
+                  style={{ backgroundColor: '#000000' }}
                 >
                   Подключиться
-                </motion.button>
+                </motion.a>
               </div>
             </motion.div>
           </div>
@@ -257,12 +278,18 @@ const ServicesSection = () => {
                 >
                   {tariff.icon}
                 </motion.div>
-                <motion.button
-                  variants={itemVariants}
-                  className="bg-black text-white px-4 py-2 rounded-full mx-auto w-full max-w-xs active:scale-105 transition-transform duration-100 active:shadow-md"
+                <motion.a
+                  href="https://my.jump.taxi/autoregistration/form/c32803?referrer_code=14515641"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-black text-white px-4 py-2 rounded-full mx-auto w-full max-w-xs active:shadow-md"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
+                  style={{ backgroundColor: '#000000' }}
                 >
                   Подключиться
-                </motion.button>
+                </motion.a>
               </div>
             </motion.div>
           ))}

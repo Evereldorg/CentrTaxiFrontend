@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaWhatsapp, FaViber, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaTelegram } from 'react-icons/fa';
+import { FaWhatsapp, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaTelegram } from 'react-icons/fa';
 
 const ContactSection = () => {
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -13,40 +13,30 @@ const ContactSection = () => {
   const contacts = [
     {
       number: "+7 921 993-00-06", 
-      role: "Алексей"
+      role: "Алексей",
+      telegram: "https://t.me/KMixali4"
     },
     {
       number: "+7 965 016 71 88",
-      role: "Олег"
+      role: "Олег",
+      telegram: "https://t.me/tutolog"
     }
   ];
 
   const handleCallClick = (number, index, isMobile = false) => {
     if (isMobile) {
-      // На мобильных устройствах сразу звоним
       window.location.href = `tel:${number.replace(/\D/g, '')}`;
     } else {
-      // На десктопах копируем номер
       navigator.clipboard.writeText(number.replace(/\D/g, ''));
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
     }
   };
 
-  const openMessenger = (number, app) => {
-    const cleanNumber = number.replace(/\D/g, '');
-    let url;
-    
-    if (app === 'whatsapp') {
-      url = `https://wa.me/${cleanNumber}`;
-    } else if (app === 'viber') {
-      url = `viber://chat?number=${cleanNumber}`;
-    }
-    
+  const openMessenger = (url) => {
     window.open(url, '_blank');
   };
 
-  // Варианты анимации
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -92,7 +82,6 @@ const ContactSection = () => {
     }
   };
 
-  // Настройки для viewport
   const viewportSettings = {
     once: true,
     amount: 0.2,
@@ -155,11 +144,11 @@ const ContactSection = () => {
               <div className="flex justify-between items-start mb-1">
                 <span className="text-gray-500 text-2xs">{contact.role}</span>
                 <div className="flex gap-1">
-                  <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
-                    <FaWhatsapp className="text-green-500" size={20} />
+                  <button onClick={() => openMessenger(contact.telegram)}>
+                    <FaTelegram className="text-blue-500" size={20} />
                   </button>
-                  <button onClick={() => openMessenger(contact.number, 'viber')}>
-                    <FaViber className="text-purple-600" size={20} />
+                  <button onClick={() => openMessenger(`https://wa.me/${contact.number.replace(/\D/g, '')}`)}>
+                    <FaWhatsapp className="text-green-500" size={20} />
                   </button>
                 </div>
               </div>
@@ -188,15 +177,15 @@ const ContactSection = () => {
           <div className="flex items-center gap-2 mb-1">
             <FaEnvelope className="text-yellow-500 flex-shrink-0" size={12} />
             <a 
-              href="mailto:info@taxi-driver.ru" 
+              href="mailto:9930006@bk.ru" 
               className="text-gray-700 text-xs hover:text-blue-600 transition-colors"
             >
-              info@taxi-driver.ru
+              9930006@bk.ru
             </a>
           </div>
           <div className="flex items-center gap-2">
             <FaMapMarkerAlt className="text-yellow-500 flex-shrink-0" size={12} />
-            <span className="text-gray-700 text-xs">Санкт-Петербург</span>
+            <span className="text-gray-700 text-xs">Санкт-Петербург, Синий мост, Исаакиевская площадь</span>
           </div>
         </motion.div>
       </div>
@@ -257,11 +246,11 @@ const ContactSection = () => {
                 <div className="flex justify-between items-start mb-1">
                   <span className="text-gray-500 text-xs">{contact.role}</span>
                   <div className="flex gap-2">
-                    <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
-                      <FaWhatsapp className="text-green-500" size={24} />
+                    <button onClick={() => openMessenger(contact.telegram)}>
+                      <FaTelegram className="text-blue-500" size={24} />
                     </button>
-                    <button onClick={() => openMessenger(contact.number, 'viber')}>
-                      <FaViber className="text-purple-600" size={24} />
+                    <button onClick={() => openMessenger(`https://wa.me/${contact.number.replace(/\D/g, '')}`)}>
+                      <FaWhatsapp className="text-green-500" size={24} />
                     </button>
                   </div>
                 </div>
@@ -297,15 +286,15 @@ const ContactSection = () => {
               <div className="flex items-center gap-3">
                 <FaEnvelope className="text-yellow-500 flex-shrink-0" size={16} />
                 <a 
-                  href="mailto:info@taxi-driver.ru" 
+                  href="mailto:9930006@bk.ru" 
                   className="text-gray-700 text-sm hover:text-blue-600 transition-colors"
                 >
-                  info@taxi-driver.ru
+                  9930006@bk.ru
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <FaMapMarkerAlt className="text-yellow-500 flex-shrink-0" size={16} />
-                <span className="text-gray-700 text-sm">Санкт-Петербург, Невский пр-т</span>
+                <span className="text-gray-700 text-sm">Санкт-Петербург, Синий мост, Исаакиевская площадь</span>
               </div>
             </div>
           </motion.div>
@@ -388,11 +377,11 @@ const ContactSection = () => {
                       <h3 className="font-bold text-gray-900">{contact.role}</h3>
                     </div>
                     <div className="flex gap-3">
-                      <button onClick={() => openMessenger(contact.number, 'whatsapp')}>
-                        <FaWhatsapp className="text-green-500 hover:text-green-600 transition-colors" size={30} />
+                      <button onClick={() => openMessenger(contact.telegram)}>
+                        <FaTelegram className="text-blue-500 hover:text-blue-600 transition-colors" size={30} />
                       </button>
-                      <button onClick={() => openMessenger(contact.number, 'viber')}>
-                        <FaViber className="text-purple-600 hover:text-purple-700 transition-colors" size={30} />
+                      <button onClick={() => openMessenger(`https://wa.me/${contact.number.replace(/\D/g, '')}`)}>
+                        <FaWhatsapp className="text-green-500 hover:text-green-600 transition-colors" size={30} />
                       </button>
                     </div>
                   </div>
@@ -427,10 +416,10 @@ const ContactSection = () => {
                   <div>
                     <h4 className="font-semibold text-gray-800">Электронная почта</h4>
                     <a 
-                      href="mailto:info@taxi-driver.ru" 
+                      href="mailto:9930006@bk.ru" 
                       className="text-blue-600 hover:text-blue-800 transition-colors"
                     >
-                      info@taxi-driver.ru
+                      9930006@bk.ru
                     </a>
                   </div>
                 </div>
@@ -438,7 +427,7 @@ const ContactSection = () => {
                   <FaMapMarkerAlt className="text-yellow-500 mt-1" size={20} />
                   <div>
                     <h4 className="font-semibold text-gray-800">Адрес</h4>
-                    <p className="text-gray-600">Санкт-Петербург, Невский пр-т</p>
+                    <p className="text-gray-600">Санкт-Петербург, Синий мост, Исаакиевская площадь</p>
                   </div>
                 </div>
               </div>
@@ -459,15 +448,26 @@ const ContactSection = () => {
                 <span>|</span>
                 <span>Политика конфиденциальности</span>
               </div>
-              <a 
-                href="https://t.me/ваш_телеграм" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1 hover:text-yellow-400 transition-colors"
-              >
-                <FaTelegram size={14} />
-                <span>Telegram</span>
-              </a>
+              <div className="flex items-center gap-2">
+                <a 
+                  href="https://t.me/+qpZJmUZ0QcJjZTIy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1 hover:text-yellow-400 transition-colors"
+                >
+                  <FaTelegram size={14} />
+                  <span>Telegram</span>
+                </a>
+                <span>|</span>
+                <a 
+                  href="https://t.me/Evereldorg" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-yellow-400 transition-colors"
+                >
+                  Хочешь свой сайт? Пиши!
+                </a>
+              </div>
             </div>
           </div>
 
@@ -481,13 +481,22 @@ const ContactSection = () => {
               <p>Политика конфиденциальности</p>
               <div className="hidden md:block h-4 w-px bg-gray-500"></div>
               <a 
-                href="https://t.me/ваш_телеграм" 
+                href="https://t.me/+qpZJmUZ0QcJjZTIy" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-yellow-400 transition-colors"
               >
                 <FaTelegram size={18} />
                 <span>Telegram</span>
+              </a>
+              <div className="hidden md:block h-4 w-px bg-gray-500"></div>
+              <a 
+                href="https://t.me/Evereldorg" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Хочешь свой сайт? <span className="font-medium">Пиши!</span>
               </a>
             </div>
           </div>

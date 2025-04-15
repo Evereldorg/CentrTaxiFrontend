@@ -17,6 +17,13 @@ const HeroSection = () => {
     }
   }, [controls, inView]);
 
+  const scrollToServices = () => {
+    const servicesSection = document.getElementById('services');
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -94,7 +101,6 @@ const HeroSection = () => {
             }
           }}
         >
-          {/* Остальной код остается без изменений */}
           <motion.h1 
             variants={itemVariants}
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 tracking-tight"
@@ -155,7 +161,10 @@ const HeroSection = () => {
             variants={buttonVariants}
             className="flex justify-center"
           >
-            <button className="bg-yellow-500 text-gray-900 font-semibold py-2 px-4 rounded-full hover:bg-yellow-400 transition duration-300 shadow-md transform hover:scale-105">
+            <button 
+              onClick={scrollToServices}
+              className="bg-yellow-500 text-gray-900 font-semibold py-2 px-4 rounded-full hover:bg-yellow-400 transition duration-300 shadow-md transform hover:scale-105"
+            >
               Подключиться
             </button>
           </motion.div>
