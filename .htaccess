@@ -1,0 +1,15 @@
+# Включение редиректов
+RewriteEngine On
+
+# HTTP → HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# www → без www
+RewriteCond %{HTTP_HOST} ^www\.center-taxi\.ru$ [NC]
+RewriteRule ^(.*)$ https://center-taxi.ru/$1 [R=301,L]
+
+# Защита от взлома
+<FilesMatch "\.(php|html)$">
+   Header set X-Content-Type-Options "nosniff"
+</FilesMatch>

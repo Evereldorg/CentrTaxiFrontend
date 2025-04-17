@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /private
+Disallow: /cgi-bin
+Sitemap: https://center-taxi.ru/sitemap.xml
