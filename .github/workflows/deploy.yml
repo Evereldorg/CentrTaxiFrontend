@@ -18,11 +18,12 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "${{ secrets.SSH_HOST }} $(ssh-keyscan -t ed25519 ${{ secrets.SSH_HOST }} 2>/dev/null)" >> ~/.ssh/known_hosts
 
-      - name: Deploy
+      - name: Deploy Files
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf /var/www/frontend/{*,.*}"
-          rsync -avz --delete --no-perms --no-owner --no-group dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/frontend/
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+            dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/frontend/
+          
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             chown -R www-data:www-data /var/www/frontend
             find /var/www/frontend -type d -exec chmod 755 {} \;
             find /var/www/frontend -type f -exec chmod 644 {} \;
