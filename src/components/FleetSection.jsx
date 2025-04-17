@@ -407,7 +407,7 @@ const FleetSection = () => {
           </motion.div>
         </div>
 
-        {/* Оптимизированная мобильная версия */}
+        {/* Оптимизированная мобильная версия rdrdrd*/}
         <motion.div 
           initial="hidden"
           animate={controls}
