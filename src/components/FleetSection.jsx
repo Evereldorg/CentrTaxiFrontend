@@ -442,7 +442,7 @@ const FleetSection = () => {
           initial="hidden"
           animate={controls}
           variants={containerVariants}
-          className="md:hidden flex overflow-x-auto snap-x snap-mandatory h-full gap-3 px-4 pt-6 pb-12 items-center"
+          className="md:hidden flex overflow-x-auto snap-x snap-mandatory h-full gap-3 px-4 pt-3 pb-12 items-center"
         >
           <motion.div
             initial={{ opacity: 0 }}
