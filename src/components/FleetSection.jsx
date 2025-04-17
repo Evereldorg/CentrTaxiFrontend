@@ -107,16 +107,27 @@ const FleetSection = () => {
     const input = e.target.value;
     const digits = input.replace(/\D/g, '');
     
-    // Позволяем редактировать любую часть номера
-    if (digits.length <= 1) {
-      setPhone(digits ? `+7 (${digits.slice(1)}` : '');
+    // Позволяем полностью очистить поле
+    if (digits.length === 0) {
+      setPhone('');
       return;
     }
     
-    let formatted = '+7 (';
+    // Если начинаем ввод с цифры (не +7), добавляем +7
+    if (digits.length > 0 && !input.startsWith('+7') && !input.startsWith('7')) {
+      const newDigits = '7' + digits;
+      formatPhoneNumber(newDigits);
+      return;
+    }
+    
+    formatPhoneNumber(digits);
+  };
+
+  const formatPhoneNumber = (digits) => {
+    let formatted = '+7 ';
     
     if (digits.length > 1) {
-      formatted += digits.slice(1, 4);
+      formatted += `(${digits.slice(1, 4)}`;
     }
     if (digits.length > 4) {
       formatted += `) ${digits.slice(4, 7)}`;
@@ -133,12 +144,18 @@ const FleetSection = () => {
 
   const handlePhoneKeyDown = (e) => {
     // Разрешаем удаление символов Backspace и Delete
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (e.key === 'Backspace') {
       const selectionStart = e.target.selectionStart;
       const selectionEnd = e.target.selectionEnd;
       
       // Если выделен текст - удаляем его
       if (selectionStart !== selectionEnd) {
+        return;
+      }
+      
+      // Если курсор находится в начале +7 - предотвращаем удаление
+      if (selectionStart <= 3) {
+        e.preventDefault();
         return;
       }
       
@@ -148,9 +165,17 @@ const FleetSection = () => {
         return;
       }
       
-      // Иначе предотвращаем удаление разделителей
-      e.preventDefault();
+      // Если курсор после разделителя - перемещаем курсор назад
+      if ([' ', '(', ')', '-'].includes(charBeforeCursor)) {
+        e.preventDefault();
+        e.target.setSelectionRange(selectionStart - 1, selectionStart - 1);
+      }
     }
+  };
+
+  const validatePhone = (phoneNumber) => {
+    const digits = phoneNumber.replace(/\D/g, '');
+    return digits.length >= 11; // +7 и еще 10 цифр
   };
 
   const sendToTelegram = async (text) => {
@@ -200,6 +225,11 @@ const FleetSection = () => {
 
     if (!phone || !selectedService) {
       setSubmitError("Пожалуйста, заполните все обязательные поля");
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      setSubmitError("Пожалуйста, введите корректный номер телефона");
       return;
     }
 
@@ -407,7 +437,7 @@ const FleetSection = () => {
           </motion.div>
         </div>
 
-        {/* Оптимизированная мобильная версия rdrdrd*/}
+        {/* Оптимизированная мобильная версия */}
         <motion.div 
           initial="hidden"
           animate={controls}
@@ -517,7 +547,7 @@ const FleetSection = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="phone">
-                  Номер телефона
+                  Номер телефона *
                 </label>
                 <input
                   id="phone"
@@ -533,7 +563,7 @@ const FleetSection = () => {
 
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-medium mb-1" htmlFor="service">
-                  Услуга
+                  Услуга *
                 </label>
                 <select
                   id="service"
