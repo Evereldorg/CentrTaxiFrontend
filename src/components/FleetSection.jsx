@@ -104,26 +104,53 @@ const FleetSection = () => {
   }, [controls, inView]);
 
   const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, '');
-    let formattedValue = '';
+    const input = e.target.value;
+    const digits = input.replace(/\D/g, '');
     
-    if (value.length > 0) {
-      formattedValue = '+7 (';
-      if (value.length > 1) {
-        formattedValue += value.substring(1, 4) + ') ';
-      }
-      if (value.length > 4) {
-        formattedValue += value.substring(4, 7) + ' ';
-      }
-      if (value.length > 7) {
-        formattedValue += value.substring(7, 9) + '-';
-      }
-      if (value.length > 9) {
-        formattedValue += value.substring(9, 11);
-      }
+    // Позволяем редактировать любую часть номера
+    if (digits.length <= 1) {
+      setPhone(digits ? `+7 (${digits.slice(1)}` : '');
+      return;
     }
     
-    setPhone(formattedValue);
+    let formatted = '+7 (';
+    
+    if (digits.length > 1) {
+      formatted += digits.slice(1, 4);
+    }
+    if (digits.length > 4) {
+      formatted += `) ${digits.slice(4, 7)}`;
+    }
+    if (digits.length > 7) {
+      formatted += ` ${digits.slice(7, 9)}`;
+    }
+    if (digits.length > 9) {
+      formatted += `-${digits.slice(9, 11)}`;
+    }
+    
+    setPhone(formatted);
+  };
+
+  const handlePhoneKeyDown = (e) => {
+    // Разрешаем удаление символов Backspace и Delete
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      const selectionStart = e.target.selectionStart;
+      const selectionEnd = e.target.selectionEnd;
+      
+      // Если выделен текст - удаляем его
+      if (selectionStart !== selectionEnd) {
+        return;
+      }
+      
+      // Если курсор находится после цифры - разрешаем удаление
+      const charBeforeCursor = phone[selectionStart - 1];
+      if (/\d/.test(charBeforeCursor)) {
+        return;
+      }
+      
+      // Иначе предотвращаем удаление разделителей
+      e.preventDefault();
+    }
   };
 
   const sendToTelegram = async (text) => {
@@ -265,7 +292,7 @@ const FleetSection = () => {
             initial="hidden"
             animate={controls}
             variants={containerVariants}
-            className="relative z-10 w-full max-w-[1600px] mx-auto grid grid-cols-5 gap-8 px-6"
+            className="relative z-10 w-full max-w-[1800px] mx-auto grid grid-cols-5 gap-4 2xl:gap-8 px-4 2xl:px-8"
           >
             {cardData.map((card, index) => (
               <motion.div 
@@ -497,6 +524,7 @@ const FleetSection = () => {
                   type="text"
                   value={phone}
                   onChange={handlePhoneChange}
+                  onKeyDown={handlePhoneKeyDown}
                   placeholder="+7 (___) ___ __-__"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
                   required
