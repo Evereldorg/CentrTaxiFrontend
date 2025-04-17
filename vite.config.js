@@ -30,7 +30,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://centrtaxibackend-production.up.railway.app',
+        target: 'https://center-taxi.ru',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }
