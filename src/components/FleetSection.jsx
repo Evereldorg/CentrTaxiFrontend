@@ -107,13 +107,11 @@ const FleetSection = () => {
     const input = e.target.value;
     const digits = input.replace(/\D/g, '');
     
-    // Позволяем полностью очистить поле
     if (digits.length === 0) {
       setPhone('');
       return;
     }
     
-    // Если начинаем ввод с цифры (не +7), добавляем +7
     if (digits.length > 0 && !input.startsWith('+7') && !input.startsWith('7')) {
       const newDigits = '7' + digits;
       formatPhoneNumber(newDigits);
@@ -143,29 +141,24 @@ const FleetSection = () => {
   };
 
   const handlePhoneKeyDown = (e) => {
-    // Разрешаем удаление символов Backspace и Delete
     if (e.key === 'Backspace') {
       const selectionStart = e.target.selectionStart;
       const selectionEnd = e.target.selectionEnd;
       
-      // Если выделен текст - удаляем его
       if (selectionStart !== selectionEnd) {
         return;
       }
       
-      // Если курсор находится в начале +7 - предотвращаем удаление
       if (selectionStart <= 3) {
         e.preventDefault();
         return;
       }
       
-      // Если курсор находится после цифры - разрешаем удаление
       const charBeforeCursor = phone[selectionStart - 1];
       if (/\d/.test(charBeforeCursor)) {
         return;
       }
       
-      // Если курсор после разделителя - перемещаем курсор назад
       if ([' ', '(', ')', '-'].includes(charBeforeCursor)) {
         e.preventDefault();
         e.target.setSelectionRange(selectionStart - 1, selectionStart - 1);
@@ -175,7 +168,7 @@ const FleetSection = () => {
 
   const validatePhone = (phoneNumber) => {
     const digits = phoneNumber.replace(/\D/g, '');
-    return digits.length >= 11; // +7 и еще 10 цифр
+    return digits.length >= 11;
   };
 
   const sendToTelegram = async (text) => {
@@ -461,7 +454,7 @@ const FleetSection = () => {
                 key={idx}
                 variants={cardVariants}
                 custom={idx}
-                className="flex-none w-64 h-[18rem] rounded-2xl border border-black/20 shadow-lg snap-center p-4 mx-1.5 flex flex-col ring-1 ring-black/10 relative"
+                className="flex-none w-64 min-h-[18rem] rounded-2xl border border-black/20 border-solid shadow-lg snap-center p-4 mx-1.5 flex flex-col ring-1 ring-black/10 relative"
               >
                 <div className="absolute inset-0 bg-white/70 backdrop-blur-md rounded-2xl" />
                 <div className="flex-1 flex flex-col items-center justify-start text-center px-2 relative z-10">
@@ -469,7 +462,7 @@ const FleetSection = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + idx * 0.1 }}
-                    className="font-bold text-2sm text-gray-800 mb-4"
+                    className="font-bold text-sm text-gray-800 mb-4 line-clamp-2 min-h-[2.5rem] flex items-center justify-center"
                   >
                     {card.title}
                   </motion.h3>
@@ -510,7 +503,7 @@ const FleetSection = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 + idx * 0.1 }}
-                    className="bg-yellow-400/90 text-gray-800 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ring-1 ring-black/10 hover:bg-yellow-500 transition-colors w-full mt-4"
+                    className="bg-yellow-400/90 text-gray-800 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ring-1 ring-black/10 hover:bg-yellow-500 transition-colors w-full mt-auto"
                   >
                     Подробнее
                   </motion.button>

@@ -98,7 +98,7 @@ const AboutSection = () => {
 
   return (
     <section id="about" className="snap-start min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100" ref={ref}>
-      <div className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-between py-8 md:py-12">
+      <div className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-8 md:py-12">
         <div>
           {/* Заголовок */}
           <motion.div
@@ -131,7 +131,7 @@ const AboutSection = () => {
           </motion.div>
 
           {/* Мобильная карусель */}
-          <div className="md:hidden mt-2 mb-8 px-2">
+          <div className="md:hidden mt-2 mb-6 px-2">
             <motion.div
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
@@ -231,7 +231,7 @@ const AboutSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 1.5, type: "spring" }}
-          className="text-center mt-4 mb-4 md:mb-0"
+          className="text-center mt-8 md:mt-12 mb-4"
         >
           <motion.p 
             className="text-lg md:text-xl font-bold text-yellow-600 inline-block px-5 py-2 rounded-full bg-gradient-to-r from-yellow-100 to-yellow-50 shadow-sm border border-black border-opacity-10"

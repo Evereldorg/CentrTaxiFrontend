@@ -4,11 +4,74 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Основные мета-теги -->
+  <title>Центр подключения водителей | Таксопарк Санкт-Петербург</title>
+  <meta name="description" content="Подключение водителей к таксопарку в Санкт-Петербурге. Высокие тарифы, честные выплаты, помощь с документами. Станьте водителем такси с нами!">
+  <meta name="keywords" content="такси, таксопарк, санкт-петербург, подключение водителей, работа водителем, стать таксистом, такси СПб, таксопарк СПб, таксопарк Санкт-Петербург, вертолёты, вип, вип-такси, экскурсии СБП, экскурсии, экскурсии Санкт-Петербург, вертолёты СПБ, вертолёты Санкт-Петербург, Форум, Форум СПб, Форум Санкт-Петербург">
+  
+  <!-- Яндекс верификация -->
   <meta name="yandex-verification" content="1e95e1c757ab5aa5" />
+  
+  <!-- OpenGraph / Социальные сети -->
+  <meta property="og:title" content="Центр подключения водителей | Таксопарк Санкт-Петербург">
+  <meta property="og:description" content="Подключение водителей к таксопарку в Санкт-Петербурге. Высокие тарифы, честные выплаты">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://center-taxi.ru">
+  <meta property="og:image" content="https://center-taxi.ru/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Центр подключения водителей">
+  
+  <!-- Для ВКонтакте -->
+  <meta property="vk:image" content="https://center-taxi.ru/og-image.jpg">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Центр подключения водителей | Таксопарк Санкт-Петербург">
+  <meta name="twitter:description" content="Подключение водителей к таксопарку в Санкт-Петербурге">
+  <meta name="twitter:image" content="https://center-taxi.ru/og-image.jpg">
+  
+  <!-- WhatsApp (использует OpenGraph, но лучше явно указать) -->
+  <meta property="og:image:secure_url" content="https://center-taxi.ru/og-image.jpg">
+  <meta property="og:image:alt" content="Центр подключения водителей в Санкт-Петербурге">
+  
+  <!-- Telegram (использует OpenGraph, но можно добавить явно) -->
+  <meta property="telegram:image" content="https://center-taxi.ru/og-image.jpg">
+  
+  <!-- Каноническая ссылка -->
+  <link rel="canonical" href="https://center-taxi.ru" />
+  
+  <!-- Предзагрузка шрифтов -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <title>Центр подключения водителей</title>
+  
+  <!-- Schema.org микроразметка -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    "name": "Центр подключения водителей",
+    "description": "Таксопарк для подключения водителей в Санкт-Петербурге",
+    "url": "https://center-taxi.ru",
+    "logo": "https://center-taxi.ru/logo.png",
+    "telephone": "+7 (921) 993-00-06",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Санкт-Петербург",
+      "addressCountry": "RU"
+    },
+    "sameAs": [
+      "https://vk.com/dccspb",
+      "https://t.me/+qpZJmUZ0QcJjZTIy",
+      "https://wa.me/79219930006"
+    ],
+    "priceRange": "$$",
+    "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 00:00-24:00"
+  }
+  </script>
+  
   <!-- Production React -->
   <script>
     if (window.location.hostname !== 'localhost') {
@@ -21,6 +84,47 @@
 </head>
 <body>
   <div id="root"></div>
+  
+  <!-- Дополнительная микроразметка для главной страницы -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Центр подключения водителей",
+    "url": "https://center-taxi.ru",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://center-taxi.ru/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
   <script type="module" src="/src/main.jsx"></script>
+  
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(101192527, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/101192527" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+  
+<!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WXZ6B29Q');</script>
+  <!-- End Google Tag Manager -->
 </body>
 </html>

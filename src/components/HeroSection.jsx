@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMoneyBillWave, FaHandshake, FaMapMarkedAlt, FaLifeRing } from 'react-icons/fa';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
 
 const HeroSection = () => {
+  const [isVideoSupported, setIsVideoSupported] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const controls = useAnimation();
   const [ref, inView] = useInView({
     threshold: 0.3,
     triggerOnce: true
   });
+
+  useEffect(() => {
+    // Проверяем поддержку видео и мобильные устройства
+    const video = document.createElement('video');
+    const isSupported = !!video.canPlayType('video/mp4');
+    setIsVideoSupported(isSupported);
+    setIsMobile(/Mobi|Android/i.test(navigator.userAgent));
+
+    // Для слабых мобильных устройств отключаем видео
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      const isLowPerformance = navigator.hardwareConcurrency < 4 || 
+                             (navigator.deviceMemory && navigator.deviceMemory < 2);
+      if (isLowPerformance) {
+        setIsVideoSupported(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (inView) {
@@ -66,25 +84,35 @@ const HeroSection = () => {
       className="relative w-full h-screen snap-start" 
       ref={ref}
       style={{ 
-        // Добавляем отступ сверху равный высоте навбара только на мобильных
         paddingTop: 'calc(env(safe-area-inset-top) + 0.7rem)',
-        // На десктопах оставляем как было
-        '@media (min-width: 768px)': {
-          paddingTop: 0
-        }
       }}
     >
-      {/* Фоновое видео */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source src="/video.mp4" type="video/mp4" />
-        Ваш браузер не поддерживает видео фон.
-      </video>
+      {/* Фоновое видео или изображение */}
+      {isVideoSupported ? (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          disablePictureInPicture
+          preload="auto"
+        >
+          <source src="/video.mp4" type="video/mp4" />
+          <source src="/video.webm" type="video/webm" />
+          <img src="/hero-fallback.jpg" alt="Фоновое изображение" className="absolute inset-0 w-full h-full object-cover" />
+        </video>
+      ) : (
+        <div className="absolute inset-0 w-full h-full z-0">
+          <img 
+            src="/hero-fallback.jpg" 
+            alt="Фоновое изображение" 
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50"></div>
+        </div>
+      )}
 
       {/* Анимированный блок с отступом для мобильных */}
       <div className="relative z-10 h-full flex items-center px-2 sm:px-4 md:px-4 lg:px-4">
@@ -92,13 +120,9 @@ const HeroSection = () => {
           initial="hidden"
           animate={controls}
           variants={containerVariants}
-          className="bg-white/80 backdrop-blur-md rounded-2xl text-gray-900 p-6 sm:p-8 md:p-10 max-w-xl w-full mx-auto lg:mx-0 border border-black/10 ring-1 ring-black/10 shadow-2xl"
+          className={`${isVideoSupported ? 'bg-white/80' : 'bg-white/90'} backdrop-blur-md rounded-2xl text-gray-900 p-6 sm:p-8 md:p-10 max-w-xl w-full mx-auto lg:mx-0 border border-black/10 ring-1 ring-black/10 shadow-2xl`}
           style={{
-            // Дополнительный margin-top только на мобильных
-            marginTop: '4rem',
-            '@media (min-width: 768px)': {
-              marginTop: 0
-            }
+            marginTop: isMobile ? '4rem' : 0
           }}
         >
           <motion.h1 
