@@ -173,11 +173,13 @@ const NewSection = () => {
 
   return (
     <section className="relative w-full min-h-screen bg-gray-100 font-sans pt-14 pb-8 md:pt-24 md:pb-12">
-      <div className="w-full py-2 text-center bg-gray-900 text-white text-lg md:text-3xl font-bold fixed top-16 left-0 z-20 h-12 flex items-center justify-center">
+      {/* Изменено: top-24 вместо top-16, h-14 вместо h-12 */}
+      <div className="w-full py-2 text-center bg-gray-900 text-white text-lg md:text-3xl font-bold fixed top-24 left-0 z-20 h-14 flex items-center justify-center">
         Новости
       </div>
 
-      <div className="w-full h-full flex items-center justify-center px-4 pt-16 pb-12 md:pt-32 md:pb-16">
+      {/* Изменено: pt-28 вместо pt-16 */}
+      <div className="w-full h-full flex items-center justify-center px-4 pt-28 pb-12 md:pt-32 md:pb-16">
         <div className="w-full max-w-screen-xl relative">
           {loading && (
             <div className="text-center text-yellow-600 mb-4">

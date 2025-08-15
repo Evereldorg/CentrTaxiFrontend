@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaWhatsapp, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaTelegram } from 'react-icons/fa';
+import { FaWhatsapp, FaPhoneAlt, FaTelegram, FaTimes, FaVk } from 'react-icons/fa';
 
 const ContactSection = () => {
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+
   const benefits = [
     "Экономить на аренде и направлять эти средства на улучшение сервиса для наших водителей",
     "Работать быстрее и удобнее - все вопросы решаются дистанционно",
@@ -20,6 +22,21 @@ const ContactSection = () => {
       number: "+7 965 016 71 88",
       role: "Олег",
       telegram: "https://t.me/tutolog"
+    }
+  ];
+
+  const socialLinks = [
+    {
+      name: "ВКонтакте",
+      url: "https://vk.com/dccspb?from=groups",
+      icon: <FaVk size={32} />,
+      color: "text-blue-600"
+    },
+    {
+      name: "Telegram-канал",
+      url: "https://t.me/+qpZJmUZ0QcJjZTIy",
+      icon: <FaTelegram size={32} />,
+      color: "text-blue-500"
     }
   ];
 
@@ -129,7 +146,7 @@ const ContactSection = () => {
         </motion.ul>
 
         <motion.div 
-          className="space-y-2 mb-3"
+          className="space-y-2 mb-2"
           initial="hidden"
           whileInView="visible"
           viewport={viewportSettings}
@@ -167,25 +184,30 @@ const ContactSection = () => {
         </motion.div>
 
         <motion.div
-          className="bg-white rounded-lg shadow-xs p-2 border border-gray-200"
+          className="bg-white rounded-lg shadow-xs p-1 border border-gray-200"
           initial="hidden"
           whileInView="visible"
           viewport={viewportSettings}
           variants={itemVariants}
           transition={{ delay: 0.6 }}
         >
-          <div className="flex items-center gap-2 mb-1">
-            <FaEnvelope className="text-yellow-500 flex-shrink-0" size={12} />
-            <a 
-              href="mailto:9930006@bk.ru" 
-              className="text-gray-700 text-xs hover:text-blue-600 transition-colors"
-            >
-              9930006@bk.ru
-            </a>
-          </div>
-          <div className="flex items-center gap-2">
-            <FaMapMarkerAlt className="text-yellow-500 flex-shrink-0" size={12} />
-            <span className="text-gray-700 text-xs">Санкт-Петербург, Синий мост, Исаакиевская площадь</span>
+          <h3 className="font-semibold text-gray-900 mb-1 text-sm text-center">Мы в соцсетях</h3>
+          <div className="flex justify-center gap-4">
+            {socialLinks.map((social, index) => (
+              <motion.a
+                key={index}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex flex-col items-center ${social.color}`}
+                whileHover={{ y: -3 }}
+              >
+                <div className="mb-1">{React.cloneElement(social.icon, { size: 20 })}</div>
+                <span className="text-black hover:text-yellow-500 transition-colors text-xs">
+                  {social.name}
+                </span>
+              </motion.a>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -273,7 +295,7 @@ const ContactSection = () => {
           </motion.div>
 
           <motion.div 
-            className="bg-white rounded-lg shadow-xs p-4 border border-gray-200 mt-auto mb-0"
+            className="bg-white rounded-lg shadow-xs p-2 border border-gray-200 mt-auto mb-0"
             initial="hidden"
             whileInView="visible"
             viewport={viewportSettings}
@@ -281,21 +303,23 @@ const ContactSection = () => {
             transition={{ delay: 0.6 }}
             whileHover={{ y: -2 }}
           >
-            <h3 className="font-semibold text-gray-800 mb-3 text-sm">Другие контакты</h3>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <FaEnvelope className="text-yellow-500 flex-shrink-0" size={16} />
-                <a 
-                  href="mailto:9930006@bk.ru" 
-                  className="text-gray-700 text-sm hover:text-blue-600 transition-colors"
+            <h3 className="font-semibold text-gray-900 mb-1 text-center">Мы в социальных сетях</h3>
+            <div className="flex justify-center gap-4">
+              {socialLinks.map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex flex-col items-center ${social.color}`}
+                  whileHover={{ y: -3 }}
                 >
-                  9930006@bk.ru
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <FaMapMarkerAlt className="text-yellow-500 flex-shrink-0" size={16} />
-                <span className="text-gray-700 text-sm">Санкт-Петербург, Синий мост, Исаакиевская площадь</span>
-              </div>
+                  <div className="mb-1">{React.cloneElement(social.icon, { size: 24 })}</div>
+                  <span className="text-black hover:text-yellow-500 transition-colors text-sm">
+                    {social.name}
+                  </span>
+                </motion.a>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -404,32 +428,33 @@ const ContactSection = () => {
             </div>
 
             <motion.div
-              className="bg-white rounded-xl shadow-md p-4 border border-gray-200"
+              className="bg-white rounded-xl shadow-md p-6 border border-gray-200 flex flex-col"
               variants={itemVariants}
               whileHover={{ y: -3 }}
               transition={{ delay: 0.6 }}
             >
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Другие способы связи</h3>
-              <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <FaEnvelope className="text-yellow-500 mt-1" size={20} />
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Электронная почта</h4>
-                    <a 
-                      href="mailto:9930006@bk.ru" 
-                      className="text-blue-600 hover:text-blue-800 transition-colors"
-                    >
-                      9930006@bk.ru
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <FaMapMarkerAlt className="text-yellow-500 mt-1" size={20} />
-                  <div>
-                    <h4 className="font-semibold text-gray-800">Адрес</h4>
-                    <p className="text-gray-600">Санкт-Петербург, Синий мост, Исаакиевская площадь</p>
-                  </div>
-                </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Мы в социальных сетях</h3>
+              <div className="flex flex-col gap-6 flex-1 px-4">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center justify-start gap-6 p-4 rounded-lg hover:bg-gray-50 transition-all`}
+                    whileHover={{ 
+                      y: -3,
+                      backgroundColor: '#fef3c7'
+                    }}
+                  >
+                    <div className={`${social.color} flex-shrink-0`}>
+                      {social.icon}
+                    </div>
+                    <span className="text-black hover:text-yellow-500 transition-colors text-xl font-medium">
+                      {social.name}
+                    </span>
+                  </motion.a>
+                ))}
               </div>
             </motion.div>
           </motion.div>
@@ -439,14 +464,18 @@ const ContactSection = () => {
       {/* Футер для всех версий */}
       <footer className="bg-gray-800 text-white w-full py-4 mt-auto">
         <div className="container mx-auto px-4">
-          {/* Мобильная версия футера */}
           <div className="md:hidden">
             <div className="flex flex-col items-center text-center text-xs space-y-2">
               <p>© {new Date().getFullYear()} Центр подключения водителей</p>
               <div className="flex justify-center items-center space-x-2">
                 <span>Все права защищены</span>
                 <span>|</span>
-                <span>Политика конфиденциальности</span>
+                <button 
+                  onClick={() => setIsPrivacyModalOpen(true)}
+                  className="hover:text-yellow-400 transition-colors"
+                >
+                  Политика конфиденциальности
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <a 
@@ -456,7 +485,7 @@ const ContactSection = () => {
                   className="flex items-center justify-center gap-1 hover:text-yellow-400 transition-colors"
                 >
                   <FaTelegram size={14} />
-                  <span>Telegram</span>
+                  <span>Наш Telegram-канал</span>
                 </a>
                 <span>|</span>
                 <a 
@@ -465,20 +494,24 @@ const ContactSection = () => {
                   rel="noopener noreferrer"
                   className="hover:text-yellow-400 transition-colors"
                 >
-                  Хочешь свой сайт? Пиши!
+                  Разработка сайтов
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Версия футера для ноутбуков и ПК */}
           <div className="hidden md:block">
             <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-6 text-sm md:text-base">
               <p>© {new Date().getFullYear()} Центр подключения водителей</p>
               <div className="hidden md:block h-4 w-px bg-gray-500"></div>
               <p>Все права защищены</p>
               <div className="hidden md:block h-4 w-px bg-gray-500"></div>
-              <p>Политика конфиденциальности</p>
+              <button 
+                onClick={() => setIsPrivacyModalOpen(true)}
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Политика конфиденциальности
+              </button>
               <div className="hidden md:block h-4 w-px bg-gray-500"></div>
               <a 
                 href="https://t.me/+qpZJmUZ0QcJjZTIy" 
@@ -487,21 +520,89 @@ const ContactSection = () => {
                 className="flex items-center gap-2 hover:text-yellow-400 transition-colors"
               >
                 <FaTelegram size={18} />
-                <span>Telegram</span>
+                <span>Наш Telegram-канал</span>
               </a>
               <div className="hidden md:block h-4 w-px bg-gray-500"></div>
               <a 
                 href="https://t.me/Evereldorg" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hover:text-yellow-400 transition-colors"
+                className="hover:text-yellow-400 transition-colors flex items-center gap-1"
               >
-                Хочешь свой сайт? <span className="font-medium">Пиши!</span>
+                <span>Разработка сайтов</span>
+                <span className="text-yellow-400"></span>
               </a>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Модальное окно политики конфиденциальности */}
+      {isPrivacyModalOpen && (
+        <div className="fixed inset-0 z-[70] flex items-start justify-center p-4 pt-24 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
+              <h2 className="text-xl font-bold">Политика конфиденциальности</h2>
+              <button 
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            
+            <div className="p-6 text-sm">
+              <h3 className="font-bold mb-2">1. Общие положения</h3>
+              <p className="mb-4">
+                Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006 №152-ФЗ «О персональных данных» и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных, предпринимаемые Центром подключения водителей (далее – Оператор).
+              </p>
+
+              <h3 className="font-bold mb-2">2. Основные понятия</h3>
+              <p className="mb-4">
+                Оператор - Центр подключения водителей, осуществляющий обработку персональных данных.
+                Персональные данные - любая информация, относящаяся к прямо или косвенно определенному или определяемому физическому лицу (субъекту персональных данных).
+              </p>
+
+              <h3 className="font-bold mb-2">3. Обрабатываемые данные</h3>
+              <p className="mb-4">
+                Мы обрабатываем только те персональные данные, которые вы предоставляете нам при заполнении форм на сайте: номер телефона, имя (если указано). Данные используются исключительно для связи с вами по вопросам подключения к Яндекс Такси.
+              </p>
+
+              <h3 className="font-bold mb-2">4. Цели обработки данных</h3>
+              <p className="mb-4">
+                Ваши персональные данные используются для:
+                <br />- Обратной связи и консультации по услугам
+                <br />- Информирования о специальных предложениях
+                <br />- Заключения договора при вашем согласии
+              </p>
+
+              <h3 className="font-bold mb-2">5. Правовые основания обработки</h3>
+              <p className="mb-4">
+                Обработка персональных данных осуществляется на основе согласия субъекта персональных данных на обработку его персональных данных.
+              </p>
+
+              <h3 className="font-bold mb-2">6. Безопасность данных</h3>
+              <p className="mb-4">
+                Мы принимаем необходимые организационные и технические меры для защиты ваших персональных данных от неправомерного или случайного доступа, уничтожения, изменения, блокирования, копирования, распространения, а также от иных неправомерных действий третьих лиц.
+              </p>
+
+              <h3 className="font-bold mb-2">7. Контактная информация</h3>
+              <p>
+                По всем вопросам вы можете обратиться по телефону: +7 921 993-00-06 или электронной почте: info@taxi-center.ru
+              </p>
+            </div>
+            
+            <div className="p-4 border-t flex justify-end">
+              <button
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg"
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

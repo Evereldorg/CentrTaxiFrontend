@@ -1,25 +1,54 @@
 import React from 'react';
-import { FaCity, FaMoneyBillWave, FaCarSide, FaStar } from 'react-icons/fa';
+import { FaCalendarAlt, FaTag, FaCity, FaStar } from 'react-icons/fa';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
 
 const tariffs = [
   {
-    prefix: 'Вся Россия-1',
-    description: '80 рублей в сутки во всех городах кроме МСК, СПб, Новосибирска, Екатеринбурга, Казани.',
-    icon: <FaCity className="text-7xl text-black" />,
-    isHit: true,
+    title: 'ПОСУТОЧНЫЙ',
+    price: '80 руб./сутки',
+    description: [
+      'Действует во всех городах кроме:',
+      'Москвы, СПб, Новосибирска',
+      'Екатеринбурга, Казани',
+      '',
+      'Списания только в дни работы',
+      'Автовыплаты - без комиссии'
+    ],
+    icon: <FaCalendarAlt className="text-5xl md:text-7xl text-black mx-auto" />,
+    isPopular: true,
+    bgColor: 'bg-yellow-300',
   },
   {
-    prefix: 'Вся Россия-2',
-    description: '7 рублей с заказа во всех городах России, кроме крупных мегаполисов.',
-    icon: <FaMoneyBillWave className="text-7xl text-black" />,
+    title: 'ФИКСИРОВАННЫЙ',
+    price: '7 руб./с заказа',
+    description: [
+      '7 рублей с каждого заказа',
+      'Действует во всех городах кроме:',
+      'Москвы, СПб, Новосибирска',
+      'Екатеринбурга, Казани',
+      '',
+      'Не зависит от суммы заказа',
+      'Автовыплаты - без комиссии'
+    ],
+    icon: <FaTag className="text-5xl md:text-7xl text-black mx-auto" />,
+    bgColor: 'bg-yellow-300',
   },
   {
-    prefix: 'Водитель Москва-Санкт-Петербург',
-    description: '3% с заказа в крупных городах, помощь с документами и бухгалтерией.',
-    icon: <FaCarSide className="text-7xl text-black" />,
+    title: 'КРУПНЫЕ ГОРОДА',
+    price: '3% с заказа',
+    description: [
+      'Действует в городах:',
+      'Москва, Санкт-Петербург',
+      'Екатеринбург, Казань',
+      '',
+      '3% от суммы каждого заказа',
+      'Помощь с документами',
+      'Автовыплаты - без комиссии'
+    ],
+    icon: <FaCity className="text-5xl md:text-7xl text-black mx-auto" />,
+    bgColor: 'bg-yellow-300',
   },
 ];
 
@@ -102,7 +131,7 @@ const ServicesSection = () => {
   const buttonVariants = {
     hover: {
       scale: 1.05,
-      backgroundColor: "#111827", // Темный оттенок черного при наведении
+      backgroundColor: "#111827",
       boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.2)",
       transition: {
         duration: 0.2,
@@ -111,25 +140,25 @@ const ServicesSection = () => {
     },
     tap: {
       scale: 0.98,
-      backgroundColor: "#000000" // Чистый черный при нажатии
+      backgroundColor: "#000000"
     }
   };
 
   return (
     <section
       id="services"
-      className="min-h-screen w-full flex flex-col items-center justify-start px-4 md:px-10 pt-20 md:pt-28 pb-10 bg-white text-black snap-start"
+      className="w-full flex flex-col items-center justify-start px-4 md:px-10 pt-24 md:pt-28 pb-10 bg-white text-black"
       ref={ref}
     >
       <motion.div
         ref={titleRef}
         initial="hidden"
         animate={titleControls}
-        className="mb-8 md:mb-16 text-center"
+        className="mb-4 md:mb-16 text-center"
       >
         <motion.h2 
           variants={titleVariants}
-          className="text-4xl md:text-5xl font-bold font-['Playfair_Display'] relative pb-2"
+          className="text-3xl md:text-5xl font-bold relative pb-2"
         >
           Тарифы и условия
           <motion.span
@@ -153,7 +182,7 @@ const ServicesSection = () => {
             key={index}
             className="relative group flex-1 min-w-0"
           >
-            {tariff.isHit && (
+            {tariff.isPopular && (
               <motion.div 
                 className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20"
                 initial={{ scale: 0.8 }}
@@ -167,14 +196,14 @@ const ServicesSection = () => {
               </motion.div>
             )}
             <motion.div
-              className="bg-yellow-300 rounded-2xl flex flex-col justify-between p-8 text-center shadow-xl w-full border border-black/10 h-full"
+              className={`${tariff.bgColor} rounded-2xl flex flex-col justify-between p-6 text-center shadow-xl w-full border border-black/10 h-full`}
               style={{ 
                 backfaceVisibility: 'hidden',
                 minHeight: '500px'
               }}
               variants={itemVariants}
               whileHover={{ 
-                scale: 1.05,
+                scale: 1.03,
                 boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
                 transition: { duration: 0.3 }
               }}
@@ -183,26 +212,41 @@ const ServicesSection = () => {
                 <div>
                   <motion.h3
                     variants={itemVariants}
-                    className="text-2xl font-semibold mb-1"
+                    className="text-xl font-semibold mb-1"
                   >
                     Тариф
                   </motion.h3>
                   <motion.h4
                     variants={itemVariants}
-                    className="text-3xl font-bold mb-6"
+                    className="text-2xl font-bold mb-2"
                   >
-                    «{tariff.prefix}»
+                    «{tariff.title}»
                   </motion.h4>
+                  <motion.p
+                    variants={itemVariants}
+                    className="text-xl font-bold mb-4 text-black/80"
+                  >
+                    {tariff.price}
+                  </motion.p>
                 </div>
-                <motion.p
+                <motion.div
                   variants={itemVariants}
-                  className="text-lg mb-8 leading-snug px-4"
+                  className="mb-4 px-2"
                 >
-                  {tariff.description}
-                </motion.p>
+                  <div className="text-center space-y-1">
+                    {tariff.description.map((line, i) => (
+                      <p 
+                        key={i} 
+                        className={`text-base ${line === '' ? 'h-4' : ''} ${line.includes('Автовыплаты') ? 'font-semibold' : ''}`}
+                      >
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </motion.div>
                 <motion.div 
                   variants={itemVariants}
-                  className="flex justify-center mb-8"
+                  className="flex justify-center mb-4"
                 >
                   {tariff.icon}
                 </motion.div>
@@ -210,7 +254,7 @@ const ServicesSection = () => {
                   href="https://my.jump.taxi/autoregistration/form/c32803?referrer_code=14515641"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block bg-black text-white px-6 py-3 rounded-full mx-auto w-full max-w-xs hover:shadow-lg"
+                  className="block bg-black text-white px-4 py-2 rounded-full mx-auto w-full max-w-xs hover:shadow-lg transition-all text-sm md:text-base"
                   whileHover="hover"
                   whileTap="tap"
                   variants={buttonVariants}
@@ -229,67 +273,58 @@ const ServicesSection = () => {
         initial="hidden"
         animate={controls}
         variants={containerVariants}
-        className="md:hidden w-full overflow-x-auto no-scrollbar flex gap-4 snap-x snap-mandatory px-2 pb-4"
-        style={{ 
-          height: 'auto',
-          marginTop: '1rem',
-          marginBottom: '2rem'
-        }}
+        className="md:hidden w-full overflow-x-auto no-scrollbar flex gap-4 snap-x snap-mandatory px-2 pb-2"
       >
         <div className="flex gap-4">
           {tariffs.map((tariff, index) => (
             <motion.div
               key={index}
-              className="relative bg-yellow-300 rounded-2xl w-[85vw] p-6 flex-shrink-0 text-center shadow-lg snap-center flex flex-col justify-between"
-              style={{ height: '60vh' }}
+              className={`relative ${tariff.bgColor} rounded-2xl w-[85vw] p-3 flex-shrink-0 text-center shadow-lg snap-center flex flex-col justify-between`}
+              style={{ minHeight: '380px' }}
               variants={itemVariants}
               whileTap={{ scale: 0.98 }}
             >
-              {tariff.isHit && (
-                <div className="absolute top-2 right-2 flex items-center gap-1">
-                  <FaStar className="text-yellow-400 stroke-black stroke-[2px] text-2xl drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]" />
-                  <span className="text-xs font-bold text-black">ХИТ</span>
+              {tariff.isPopular && (
+                <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
+                  <FaStar className="text-yellow-400 stroke-black stroke-[2px] text-xl drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]" />
+                  <span className="text-xs font-bold text-black bg-white px-2 py-0.5 rounded-full">ХИТ</span>
                 </div>
               )}
               <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <motion.h3
-                    variants={itemVariants}
-                    className="text-xl font-semibold mb-1"
-                  >
+                <div className="mt-1">
+                  <h3 className="text-sm font-semibold">
                     Тариф
-                  </motion.h3>
-                  <motion.h4
-                    variants={itemVariants}
-                    className="text-2xl font-bold mb-3"
-                  >
-                    «{tariff.prefix}»
-                  </motion.h4>
+                  </h3>
+                  <h4 className="text-base font-bold mt-1">
+                    «{tariff.title}»
+                  </h4>
+                  <p className="text-base font-bold mt-1 text-black/80">
+                    {tariff.price}
+                  </p>
                 </div>
-                <motion.p
-                  variants={itemVariants}
-                  className="text-sm mb-4 px-2"
-                >
-                  {tariff.description}
-                </motion.p>
-                <motion.div
-                  variants={itemVariants}
-                  className="flex justify-center mb-4"
-                >
+                <div className="my-1 px-1">
+                  <div className="text-center space-y-0.5 text-xs leading-tight">
+                    {tariff.description.map((line, i) => (
+                      <p 
+                        key={i} 
+                        className={`${line === '' ? 'h-1' : ''} ${line.includes('Автовыплаты') ? 'font-semibold' : ''}`}
+                      >
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-center my-1">
                   {tariff.icon}
-                </motion.div>
-                <motion.a
+                </div>
+                <a
                   href="https://my.jump.taxi/autoregistration/form/c32803?referrer_code=14515641"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block bg-black text-white px-4 py-2 rounded-full mx-auto w-full max-w-xs active:shadow-md"
-                  whileHover="hover"
-                  whileTap="tap"
-                  variants={buttonVariants}
-                  style={{ backgroundColor: '#000000' }}
+                  className="block bg-black text-white px-3 py-1 rounded-full mx-auto w-full max-w-[140px] active:shadow-md transition-all text-xs mt-1"
                 >
                   Подключиться
-                </motion.a>
+                </a>
               </div>
             </motion.div>
           ))}
